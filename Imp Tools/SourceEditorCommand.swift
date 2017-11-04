@@ -93,7 +93,6 @@ extension SourceEditorCommand {
                             let header = sortedLines[index]
                             sortedLines.remove(at: index)
                             sortedLines.insert(header, at: 0)
-                            sortedLines.insert("\n", at: 1)
                             break
                         }
                     }
