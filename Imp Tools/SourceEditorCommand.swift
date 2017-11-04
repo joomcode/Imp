@@ -59,7 +59,27 @@ extension SourceEditorCommand {
             importLines = linesWithoutDuplicates.allObjects as! [String]
         }
         
-        var sortedLines = importLines.sorted { return $0 < $1 }
+        var sortedLines = importLines.sorted { (first, second) -> Bool in
+            if self.isSwiftFile {
+                return first < second
+            }
+            guard let projectHeaderPrefix = self.settings.string(forKey: Constants.settings.topPrefix) else {
+                return first < second
+            }
+            let firstClass = extractClassName(in: first) ?? first
+            let secondClass = extractClassName(in: second) ?? second
+            
+            let firstIsProjectHeader = firstClass.starts(with: projectHeaderPrefix)
+            let secondIsProjectHeader = secondClass.starts(with: projectHeaderPrefix)
+            
+            if (firstIsProjectHeader && !secondIsProjectHeader) {
+                return true;
+            } else if (secondIsProjectHeader && !firstIsProjectHeader) {
+                return false;
+            } else {
+                return first < second
+            }
+        }
         
         // Own header to top logic
         if !self.isSwiftFile && self.shouldPutOwnHeaderOnTop() {
@@ -109,6 +129,11 @@ extension SourceEditorCommand {
     
     fileprivate func shouldRemoveDuplicates() -> Bool {
         return !self.settings.bool(forKey: Constants.settings.ignoreDuplicates)
+    }
+    
+    fileprivate func extractClassName(in importString: String) -> String? {
+        let classExtractionRegex = "(?<=.\").*(?=\\.h\")"
+        return importString.matches(for: classExtractionRegex).first
     }
     
     fileprivate func getFileClass(in text: NSArray) -> String? {

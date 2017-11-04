@@ -15,6 +15,7 @@ class SettingsViewController: NSViewController {
     @IBOutlet weak var ownHeaderCheckbox: NSButton!
     @IBOutlet weak var separatedFrameworksCheckbox: NSButton!
     @IBOutlet weak var removeDuplicatesCheckbox: NSButton!
+    @IBOutlet weak var topPrefixTextField: NSTextField!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,6 +28,9 @@ class SettingsViewController: NSViewController {
         
         let removesDuplicates = !self.settings.bool(forKey: Constants.settings.ignoreDuplicates)
         self.removeDuplicatesCheckbox.state = removesDuplicates ? NSOnState : NSOffState
+        
+        let topPrefix = self.settings.string(forKey: Constants.settings.topPrefix)
+        self.topPrefixTextField.stringValue = topPrefix ?? ""
     }
     
     @IBAction func checkboxClicked(_ sender: NSButton) {
@@ -45,4 +49,7 @@ class SettingsViewController: NSViewController {
         self.settings.synchronize()
     }
     
+    @IBAction func textChanged(_ sender: NSTextField) {
+        self.settings.set(sender.stringValue, forKey: Constants.settings.topPrefix)
+    }
 }
