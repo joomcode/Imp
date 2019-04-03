@@ -21,13 +21,13 @@ class SettingsViewController: NSViewController {
         super.viewDidLoad()
         
         let putsOwnHeaderOnTop = !self.settings.bool(forKey: Constants.settings.ignoreOwnHeader)
-        self.ownHeaderCheckbox.state = putsOwnHeaderOnTop ? NSOnState : NSOffState
+        self.ownHeaderCheckbox.state = putsOwnHeaderOnTop ? NSControl.StateValue.on : NSControl.StateValue.off
         
         let separatesFrameworks = !self.settings.bool(forKey: Constants.settings.ignoreFrameworks)
-        self.separatedFrameworksCheckbox.state = separatesFrameworks ? NSOnState : NSOffState
+        self.separatedFrameworksCheckbox.state = separatesFrameworks ? NSControl.StateValue.on : NSControl.StateValue.off
         
         let removesDuplicates = !self.settings.bool(forKey: Constants.settings.ignoreDuplicates)
-        self.removeDuplicatesCheckbox.state = removesDuplicates ? NSOnState : NSOffState
+        self.removeDuplicatesCheckbox.state = removesDuplicates ? NSControl.StateValue.on : NSControl.StateValue.off
         
         let topPrefix = self.settings.string(forKey: Constants.settings.topPrefix)
         self.topPrefixTextField.stringValue = topPrefix ?? ""
@@ -35,15 +35,15 @@ class SettingsViewController: NSViewController {
     
     @IBAction func checkboxClicked(_ sender: NSButton) {
         if sender == self.ownHeaderCheckbox {
-            let shouldIgnoreOwnHeader = sender.state == NSOnState ? false : true
+            let shouldIgnoreOwnHeader = sender.state == NSControl.StateValue.on ? false : true
             self.settings.set(shouldIgnoreOwnHeader, forKey: Constants.settings.ignoreOwnHeader)
         }
         if sender == self.separatedFrameworksCheckbox {
-            let shouldIgnoreFrameworks = sender.state == NSOnState ? false : true
+            let shouldIgnoreFrameworks = sender.state == NSControl.StateValue.on ? false : true
             self.settings.set(shouldIgnoreFrameworks, forKey: Constants.settings.ignoreFrameworks)
         }
         if sender == self.removeDuplicatesCheckbox {
-            let shouldIgnoreDuplicates = sender.state == NSOnState ? false : true
+            let shouldIgnoreDuplicates = sender.state == NSControl.StateValue.on ? false : true
             self.settings.set(shouldIgnoreDuplicates, forKey: Constants.settings.ignoreDuplicates)
         }
         self.settings.synchronize()
